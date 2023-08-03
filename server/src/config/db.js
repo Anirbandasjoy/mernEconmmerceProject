@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
-const { mongodbUrl } = require("../secret");
-
 const databaseConnection = async (option = {}) => {
   try {
-    await mongoose.connect("mongodb://0.0.0.0:27017/testing", option);
+    await mongoose.connect(
+      "mongodb://0.0.0.0:27017/MERN_STACK_ECOMMERCE_PROJECT_DB",
+      option
+    );
     console.log("db is conneceted successfully");
 
     mongoose.connection.on("error", () => {

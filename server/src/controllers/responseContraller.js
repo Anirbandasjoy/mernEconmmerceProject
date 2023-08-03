@@ -12,7 +12,7 @@ const successReponse = (
   { statusCode = 200, message = "successfull", payload = {} }
 ) => {
   return res.status(statusCode).json({
-    success: false,
+    success: true,
     message: message,
     payload,
   });

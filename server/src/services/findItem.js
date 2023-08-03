@@ -1,7 +1,6 @@
 const createError = require("http-errors");
 const mongoose = require("mongoose");
 
-const User = require("../models/user.model");
 const findWithId = async (Model, id, options = {}) => {
   try {
     const item = await Model.findById(id, options);

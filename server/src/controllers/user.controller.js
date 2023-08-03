@@ -1,6 +1,5 @@
 const createError = require("http-errors");
 const jwt = require("jsonwebtoken");
-const fs = require("fs");
 const User = require("../models/user.model");
 const { successReponse } = require("./responseContraller");
 const { findWithId } = require("../services/findItem");
@@ -83,7 +82,7 @@ const deleteUserById = async (req, res, next) => {
 
     deleteImage(userImagePath);
 
-    User.findByIdAndDelete({ _id: id, isAdmin: false });
+    await User.findByIdAndDelete({ _id: id, isAdmin: false });
 
     return successReponse(res, {
       statusCode: 200,
@@ -120,7 +119,7 @@ const processRegister = async (req, res, next) => {
     };
 
     try {
-      await emailWithnodemailer(emailData);
+      // await emailWithnodemailer(emailData);
     } catch (error) {
       next(createError(500, "Faild to send verification email"));
       return;
@@ -141,13 +140,28 @@ const activateUserAccount = async (req, res, next) => {
     const token = req.body.token;
     if (!token) throw createError(404, "token not found ");
 
-    const decoded = jwt.verify(token, jwtActivationKey);
-    await User.create(decoded);
+    try {
+      const decoded = jwt.verify(token, jwtActivationKey);
+      if (!decoded) createError(401, "Unable to verify user");
+      const userExists = await User.exists({ email: decoded.email });
+      if (userExists) {
+        throw createError(409, "User email Already exists , please loged in ");
+      }
+      await User.create(decoded);
 
-    return successReponse(res, {
-      statusCode: 200,
-      message: "User Register Successfully",
-    });
+      return successReponse(res, {
+        statusCode: 200,
+        message: "User Register Successfully",
+      });
+    } catch (error) {
+      if (error.name === "TokenExpireError") {
+        throw createError(401, "Token has expired");
+      } else if (error.name === "JsonWebTokenError") {
+        throw createError(401, "Invalid Token");
+      } else {
+        throw error;
+      }
+    }
   } catch (error) {
     next(error);
   }
