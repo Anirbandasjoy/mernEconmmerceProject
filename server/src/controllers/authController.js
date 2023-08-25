@@ -52,7 +52,6 @@ const handelLogin = async (req, res, next) => {
 
     const useWithOutPassword = user.toObject();
     delete useWithOutPassword.password;
-    console.log(useWithOutPassword);
 
     successReponse(res, {
       statusCode: 200,

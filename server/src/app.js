@@ -9,6 +9,8 @@ const userRouter = require("./Routes/user.router");
 const seedRouter = require("./Routes/seed.router");
 const { errrorResponse } = require("./controllers/responseContraller");
 const authRouter = require("./Routes/auth.router");
+const categoryRouter = require("./Routes/category.router");
+const productRouter = require("./Routes/product.router");
 
 const rateLimiter = rateLimit({
   windowMs: 1 * 60 * 1000,
@@ -25,6 +27,8 @@ app.use(morgan("dev"));
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/seed", seedRouter);
+app.use("/api/categories", categoryRouter);
+app.use("/api/products", productRouter);
 
 app.use((req, res, next) => {
   next(createError(404, "route not found"));

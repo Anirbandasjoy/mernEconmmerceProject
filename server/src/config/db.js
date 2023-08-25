@@ -1,17 +1,18 @@
 const mongoose = require("mongoose");
+const logger = require("../controllers/logerController");
 const databaseConnection = async (option = {}) => {
   try {
     await mongoose.connect(
       "mongodb://0.0.0.0:27017/MERN_STACK_ECOMMERCE_PROJECT_DB",
       option
     );
-    console.log("db is conneceted successfully");
+    logger.log("info", "db is conneceted successfully");
 
     mongoose.connection.on("error", () => {
-      console.log("db connection error", error);
+      logger.log("error", "db connection error", error);
     });
   } catch (error) {
-    console.log("could not connected database ", error);
+    logger.log("error", "could not connected database ", error);
   }
 };
 

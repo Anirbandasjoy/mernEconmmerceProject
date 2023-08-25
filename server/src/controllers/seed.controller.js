@@ -1,5 +1,7 @@
+const logger = require("../controllers/logerController");
 const User = require("../models/user.model");
 const data = require("../data");
+const Product = require("../models/productModel");
 
 const seedingUser = async (req, res, next) => {
   try {
@@ -17,7 +19,19 @@ const seedingUser = async (req, res, next) => {
     console.log(error.message);
   }
 };
+const seedingProducts = async (req, res, next) => {
+  try {
+    await Product.deleteMany({});
+    const products = await Product.insertMany(data.products);
+    res.status(200).json({
+      products,
+    });
+  } catch (error) {
+    logger.log("error", error.message);
+  }
+};
 
 module.exports = {
   seedingUser,
+  seedingProducts,
 };
